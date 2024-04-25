@@ -9,7 +9,7 @@ std::vector<float> PlaneVertices(int div, float size)
     {
         for (int col = 0; col < div; col++)
         {
-            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, 0.0, row * triangle_size);
+            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, (random() % 100) / 100.0f, row * triangle_size);
             plane.push_back(vertexPosition.x);
             plane.push_back(vertexPosition.y);
             plane.push_back(vertexPosition.z);
@@ -27,19 +27,19 @@ std::vector<float> PlaneVertices(int div, float size)
 std::vector<int> PlaneIndices(int div)
 {
     std::vector<int> indices;
-    for (int row = 0; row < div; row++)
+    for (int row = 0; row < div - 1; row++)
     {
-        for (int col = 0; col < div; col++)
+        for (int col = 0; col < div - 1; col++)
         {
-            int index = row * (div + 1) + col;
+            int index = row * div + col;
 
             indices.push_back(index);
             indices.push_back(index + 1);
-            indices.push_back(index + div + 1);
-            
+            indices.push_back(index + div);
+            // std::cout << "tri: " << index << ", " << index + 1 << ", " << index + div << std::endl;
             indices.push_back(index + 1);
+            indices.push_back(index + div);
             indices.push_back(index + div + 1);
-            indices.push_back(index + div + 2);
         }
         
     }

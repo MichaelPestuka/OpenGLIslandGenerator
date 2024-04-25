@@ -61,53 +61,7 @@ int main()
 
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
-
-
-    float cube_vertices[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-};
-
-    int div = 10;
+    int div = 20;
     std::vector<float> planeVertices = PlaneVertices(div, 20.0f);
     std::vector<int> planeIndices = PlaneIndices(div);
 
@@ -138,13 +92,10 @@ int main()
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, planeVertices.size() * sizeof(float), &planeVertices[0], GL_STATIC_DRAW);
-    // glBufferData(GL_ARRAY_BUFFER, sizeof(cube_vertices), cube_vertices, GL_STATIC_DRAW);
-
     
     unsigned int EBO;
     glGenBuffers(1, &EBO);
@@ -159,22 +110,7 @@ int main()
 
 
     glEnable(GL_DEPTH_TEST);
-
-    glm::vec3 cubePositions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f), 
-        glm::vec3( 2.0f,  5.0f, -15.0f), 
-        glm::vec3(-1.5f, -2.2f, -2.5f),  
-        glm::vec3(-3.8f, -2.0f, -12.3f),  
-        glm::vec3( 2.4f, -0.4f, -3.5f),  
-        glm::vec3(-1.7f,  3.0f, -7.5f),  
-        glm::vec3( 1.3f, -2.0f, -2.5f),  
-        glm::vec3( 1.5f,  2.0f, -2.5f), 
-        glm::vec3( 1.5f,  0.2f, -1.5f), 
-        glm::vec3(-1.3f,  1.0f, -1.5f)  
-    };
-
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+    
     while(!glfwWindowShouldClose(window))
     {
         deltaTime = glfwGetTime() - lastFrame;
@@ -207,20 +143,8 @@ int main()
         int modelLoc = glGetUniformLocation(shader.ID, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        glDrawElements(GL_TRIANGLES, planeVertices.size() / 5.0f, GL_UNSIGNED_INT, 0); 
+        glDrawElements(GL_TRIANGLES, planeIndices.size(), GL_UNSIGNED_INT, 0); 
 
-        // for (int i = 0; i < 10; i++)
-        // {
-        //     glm::mat4 model = glm::mat4(1.0f);
-        //     model = glm::translate(model, cubePositions[i]);
-        //     model = glm::rotate(model, (float)glfwGetTime() * glm::radians((float)i * 10.0f + 10.0f), glm::vec3(1.0f, (float)i / 10, 0.0f));
-            
-        //     int modelLoc = glGetUniformLocation(shader.ID, "model");
-        //     glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        //     glDrawArrays(GL_TRIANGLES, 0, 36);
-        // }
-        
-        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }  
