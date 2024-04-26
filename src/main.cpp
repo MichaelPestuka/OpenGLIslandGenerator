@@ -14,7 +14,7 @@
 #include "window.hpp"
 #include "camera.hpp"
 #include "mesh_generator.hpp"
-#include "include/stb_image.h"
+#include "texture.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -61,7 +61,7 @@ int main()
 
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
-    int div = 20;
+    int div = 100;
     std::vector<float> planeVertices = PlaneVertices(div, 20.0f);
     std::vector<int> planeIndices = PlaneIndices(div);
 
@@ -74,19 +74,7 @@ int main()
         std::cerr << "image load failed" << std::endl;
     }
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(data);
+    unsigned int texture = TextureFromImageFile("container.jpg");
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
