@@ -10,8 +10,13 @@ std::vector<float> PlaneVertices(int div, float size)
     {
         for (int col = 0; col < div; col++)
         {
-            
-            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, (1.0f + noise.FractalValue(col, row)) / 2.0f, row * triangle_size);
+            float circle_placement = pow((col - div/2), 2) + pow((row - div/2), 2);
+            circle_placement /= pow(div/2, 2);
+            circle_placement *= -1.0f;
+            circle_placement += 1.0f;
+            std::clamp(circle_placement, 0.0f, 1.0f);
+
+            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, circle_placement * (1.0f + noise.FractalValue(col, row)) / 2.0f, row * triangle_size);
             plane.push_back(vertexPosition.x);
             plane.push_back(vertexPosition.y);
             plane.push_back(vertexPosition.z);
