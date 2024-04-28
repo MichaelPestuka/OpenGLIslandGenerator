@@ -15,6 +15,8 @@
 #include "camera.hpp"
 #include "mesh_generator.hpp"
 #include "texture.hpp"
+#include "perlin_noise.hpp"
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);

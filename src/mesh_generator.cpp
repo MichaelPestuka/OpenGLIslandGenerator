@@ -3,13 +3,15 @@
 std::vector<float> PlaneVertices(int div, float size)
 {
     std::vector<float> plane;
+    PerlinNoise noise = PerlinNoise(0, 0.05f, 4, 1.0f);
 
     float triangle_size = size/div; 
     for (int row = 0; row < div; row++)
     {
         for (int col = 0; col < div; col++)
         {
-            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, (random() % 100) / 100.0f, row * triangle_size);
+            
+            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, (1.0f + noise.FractalValue(col, row)) / 2.0f, row * triangle_size);
             plane.push_back(vertexPosition.x);
             plane.push_back(vertexPosition.y);
             plane.push_back(vertexPosition.z);

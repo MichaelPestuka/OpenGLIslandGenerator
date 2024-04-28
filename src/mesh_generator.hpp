@@ -6,6 +6,7 @@
 #include <random>
 
 #include <glm/glm.hpp>
+#include "perlin_noise.hpp"
 
 std::vector<float> PlaneVertices(int div, float size);
 
