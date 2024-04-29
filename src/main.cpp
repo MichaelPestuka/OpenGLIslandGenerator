@@ -15,7 +15,6 @@
 #include "camera.hpp"
 #include "mesh_generator.hpp"
 #include "texture.hpp"
-#include "perlin_noise.hpp"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -28,8 +27,8 @@ glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 glm::vec3 lightPos = glm::vec3(0.0f, 0.0f, 3.0f);
 
-int windowHeight = 600;
-int windowWidth = 800;
+int windowHeight = 900;
+int windowWidth = 1200;
 
 float lastX = 0.0f;
 float lastY = 0.0f;
@@ -58,7 +57,7 @@ int main()
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     } 
-    glViewport(0, 0, 800, 600); 
+    glViewport(0, 0, windowWidth, windowHeight); 
 
 
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
