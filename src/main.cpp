@@ -62,20 +62,15 @@ int main()
 
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
-    int div = 100;
-    std::vector<float> planeVertices = PlaneVertices(div, 20.0f);
+    int div = 500;
+    std::vector<float> planeVertices = PlaneVertices(div, 100.0f);
     std::vector<int> planeIndices = PlaneIndices(div);
 
-    int width, height, nrChannels;
+    std::cout << "pretexture" << std::endl;
+    unsigned int texture = TextureFromImageFile("grass.jpg");
+    std::cout << "posttexture" << std::endl;
 
-    unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
 
-    if(!data)
-    {
-        std::cerr << "image load failed" << std::endl;
-    }
-
-    unsigned int texture = TextureFromImageFile("container.jpg");
 
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
@@ -114,7 +109,7 @@ int main()
 
         shader.use();
 
-        glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width/(float)height, 0.1f, 100.0f);
+        glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)windowWidth/(float)windowHeight, 0.1f, 500.0f);
 
         glm::mat4 view = camera.GetViewMatrix();
 
