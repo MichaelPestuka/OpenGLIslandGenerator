@@ -6,6 +6,8 @@ std::vector<float> PlaneVertices(int div, float size)
     PerlinNoise noise = PerlinNoise(0, 0.05f, 4, 1.0f);
 
     float triangle_size = size/div; 
+    float heights[div][div];
+
     for (int row = 0; row < div; row++)
     {
         for (int col = 0; col < div; col++)
@@ -16,13 +18,75 @@ std::vector<float> PlaneVertices(int div, float size)
             circle_placement += 1.0f;
             std::clamp(circle_placement, 0.0f, 1.0f);
 
-            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, circle_placement * (1.0f + noise.FractalValue(col, row)) / 2.0f, row * triangle_size);
+            heights[row][col] = circle_placement * (1.0f + noise.FractalValue(row, col)) / 2.0f;
+        }
+    }
+
+    std::cout << "hgen" << std::endl;
+
+    coord_state is_sea[div][div]; 
+    is_sea[1][1] = SEA;
+    std::queue<glm::ivec2> unchecked_coords;
+    unchecked_coords.push(glm::ivec2(1, 1));
+    while(!unchecked_coords.empty())
+    {
+        glm::ivec2 coord = unchecked_coords.front();
+        unchecked_coords.pop();
+        if(heights[coord.x][coord.y] < 0.4f)
+        {
+            is_sea[coord.x][coord.y] = SEA;
+            
+            if(coord.x > 0 && is_sea[coord.x - 1][coord.y] == UNKNOWN)
+            {
+                unchecked_coords.push(glm::ivec2(coord.x - 1, coord.y));
+                is_sea[coord.x - 1][coord.y] = ENQUEUED;
+            }
+            if(coord.x < div - 1 && is_sea[coord.x + 1][coord.y] == UNKNOWN)
+            {
+                unchecked_coords.push(glm::ivec2(coord.x + 1, coord.y));
+                is_sea[coord.x + 1][coord.y] = ENQUEUED;
+            }
+            if(coord.y > 0 && is_sea[coord.x][coord.y - 1] == UNKNOWN)
+            {
+                unchecked_coords.push(glm::ivec2(coord.x, coord.y - 1));
+                is_sea[coord.x][coord.y - 1] = ENQUEUED;
+            }
+            if(coord.y < div - 1 && is_sea[coord.x][coord.y + 1] == UNKNOWN)
+            {
+                unchecked_coords.push(glm::ivec2(coord.x, coord.y + 1));
+                is_sea[coord.x][coord.y + 1] = ENQUEUED;
+            }
+        }
+        else
+        {
+            is_sea[coord.x][coord.y] = LAND;
+        }
+    }
+    std::cout << "seastate" << std::endl;
+    for (int row = 0; row < div; row++)
+    {
+        for (int col = 0; col < div; col++)
+        {
+            if(is_sea[row][col] == UNKNOWN && heights[row][col] < 0.4f)
+            {
+                heights[row][col] = 0.4f;
+            }
+        }
+    }
+    std::cout << "flatten" << std::endl;
+    for (int row = 0; row < div; row++)
+    {
+        for (int col = 0; col < div; col++)
+        {
+
+            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, heights[row][col] , row * triangle_size);
             plane.push_back(vertexPosition.x);
             plane.push_back(vertexPosition.y);
             plane.push_back(vertexPosition.z);
 
-            plane.push_back((float)col);
             plane.push_back((float)row);
+            plane.push_back((float)col);
+
 
             // std::cout << "pos: " << vertexPosition.x << ", " << vertexPosition.y << ", "<< vertexPosition.z << std::endl;
         }
