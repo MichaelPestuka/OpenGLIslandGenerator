@@ -62,8 +62,8 @@ int main()
 
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
-    int div = 500;
-    std::vector<float> planeVertices = PlaneVertices(div, 100.0f);
+    int div = 100;
+    std::vector<float> planeVertices = PlaneVertices(div, 20.0f, false);
     std::vector<int> planeIndices = PlaneIndices(div);
 
     std::cout << "pretexture" << std::endl;

@@ -8,8 +8,9 @@
 
 #include <glm/glm.hpp>
 #include "perlin_noise.hpp"
+#include "dla.hpp"
 
-std::vector<float> PlaneVertices(int div, float size);
+std::vector<float> PlaneVertices(int div, float size, bool use_perlin);
 
 std::vector<int> PlaneIndices(int div);
 
