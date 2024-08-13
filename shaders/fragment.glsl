@@ -19,8 +19,17 @@ void main()
     {
         FragColor = vec4(0.75f, 0.69f, 0.5f, 1.0f);
     }
+    else if(height < 0.65f)
+    {
+        FragColor = texture(tex, texCoord) * vec4(lightColor, 1.0f);
+        //FragColor = vec4(0.05f, 0.4f, 0.05f, 1.0f);
+    }
+    else if(height < 0.75)
+    {
+        FragColor = vec4(0.6f, 0.55f, 0.5f, 1.0f);
+    }
     else
     {
-        FragColor = vec4(0.05f, 0.4f, 0.05f, 1.0f);
+        FragColor = vec4(0.9f, 0.9f, 0.9f, 1.0f);
     }
 } 
