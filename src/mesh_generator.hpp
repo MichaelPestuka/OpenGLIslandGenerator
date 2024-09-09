@@ -8,7 +8,8 @@
 
 #include <glm/glm.hpp>
 #include "perlin_noise.hpp"
-#include "dla.hpp"
+#include "map.hpp"
+#include "maptile.hpp"
 
 std::vector<float> PlaneVertices(int div, float size, bool use_perlin);
 

@@ -82,13 +82,15 @@ std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
     // Generating vertex heights using DLA algo
     else
     {
-        mountain_point *brownian_tree = GenerateBrownianTree(div, 0.1f);
+        Map map(div);        
+        map.GenerateMountainRidges(0.05f);
 
         for (int row = 0; row < div; row++)
         {
             for (int col = 0; col < div; col++)
             {
-                    heights[row][col] = brownian_tree[row + div * col].height;
+                // std::cout << map.GetTile(row, col)->GetHeight() << std::endl;
+                heights[row][col] = map.GetTile(row, col)->GetHeight();
             }
         }
     }
