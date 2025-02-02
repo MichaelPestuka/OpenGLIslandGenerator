@@ -10,7 +10,8 @@ uniform vec3 lightColor;
 void main()
 {
     //FragColor = texture(tex, texCoord) * vec4(lightColor, 1.0f);
-    // FragColor = vec4(height, height, height, 1.0f);
+    FragColor = vec4(height, height, height, 1.0f);
+    /*
     if(height < 0.4f)
     {
         FragColor = vec4(0.0f, 0.4f, 0.6f, 1.0f);
@@ -32,4 +33,5 @@ void main()
     {
         FragColor = vec4(0.9f, 0.9f, 0.9f, 1.0f);
     }
+    */
 } 

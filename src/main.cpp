@@ -3,7 +3,7 @@
 #include <cmath>
 #include <vector>
 
-#include <glad/glad.h>
+#include "include/glad/glad.h"
 #include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
@@ -62,7 +62,7 @@ int main()
 
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
-    int div = 100;
+    int div = 200;
     std::vector<float> planeVertices = PlaneVertices(div, 20.0f, false);
     std::vector<int> planeIndices = PlaneIndices(div);
 

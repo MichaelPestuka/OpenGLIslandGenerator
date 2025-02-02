@@ -5,7 +5,7 @@ MapTile::MapTile(int x, int y)
     this->x = x;
     this->y = y;
     this->parentTile = nullptr;
-    this->height = 0.0f;
+    this->height = 0.35f;
 }
 
 void MapTile::SetHeight(float height)

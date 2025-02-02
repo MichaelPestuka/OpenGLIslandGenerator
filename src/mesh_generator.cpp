@@ -83,7 +83,9 @@ std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
     else
     {
         Map map(div);        
+        // map.GenerateIslandShape();
         map.GenerateMountainRidges(0.05f);
+        map.BoxBlurMap(1, 20);
 
         for (int row = 0; row < div; row++)
         {
