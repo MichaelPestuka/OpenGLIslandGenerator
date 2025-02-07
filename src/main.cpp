@@ -1,4 +1,6 @@
+#include <glm/ext/vector_float3.hpp>
 #include <iostream>
+#include <ostream>
 #include <string>
 #include <cmath>
 #include <vector>
@@ -10,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "mesh.hpp"
 #include "shader.hpp"
 #include "window.hpp"
 #include "camera.hpp"
@@ -64,34 +67,24 @@ int main()
 
     int div = 200;
     std::vector<float> planeVertices = PlaneVertices(div, 20.0f, false);
-    std::vector<int> planeIndices = PlaneIndices(div);
+    std::vector<uint32_t> planeIndices = PlaneIndices(div);
 
     std::cout << "pretexture" << std::endl;
     unsigned int texture = TextureFromImageFile("grass.jpg");
     std::cout << "posttexture" << std::endl;
 
+    std::vector<vertex> newVertices;
+    for(int i = 4; i < planeVertices.size(); i += 5)
+    {
+        vertex newVertex;
+        newVertex.position = glm::vec3(planeVertices[i - 4], planeVertices[i - 3], planeVertices[i - 2]);
+        newVertex.row = planeVertices[i - 1];
+        newVertex.col = planeVertices[i];
+        // std::cout << "VertexPos: " << newVertex.position.x << ", " << newVertex.position.y << ", " << newVertex.position.z << std::endl;
+        newVertices.push_back(newVertex);
+    }
 
-
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
-    unsigned int VBO;
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, planeVertices.size() * sizeof(float), &planeVertices[0], GL_STATIC_DRAW);
-    
-    unsigned int EBO;
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, planeIndices.size() * sizeof(int), &planeIndices[0], GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
+    Mesh planeMesh = Mesh(newVertices, planeIndices);
 
     glEnable(GL_DEPTH_TEST);
     
@@ -120,14 +113,13 @@ int main()
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
         glBindTexture(GL_TEXTURE_2D, texture);
-        glBindVertexArray(VAO);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
         int modelLoc = glGetUniformLocation(shader.ID, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-        glDrawElements(GL_TRIANGLES, planeIndices.size(), GL_UNSIGNED_INT, 0); 
+        planeMesh.Draw(shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
