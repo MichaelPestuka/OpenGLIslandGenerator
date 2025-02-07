@@ -13,7 +13,7 @@
 
 std::vector<float> PlaneVertices(int div, float size, bool use_perlin);
 
-std::vector<int> PlaneIndices(int div);
+std::vector<uint32_t> PlaneIndices(int div);
 
 enum coord_state {UNKNOWN, ENQUEUED, SEA, LAND};
 #endif

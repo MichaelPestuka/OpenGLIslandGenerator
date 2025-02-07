@@ -1,4 +1,5 @@
 #include "mesh_generator.hpp"
+#include <cstdint>
 
 std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
 {
@@ -117,9 +118,9 @@ std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
     
 }
 
-std::vector<int> PlaneIndices(int div)
+std::vector<uint32_t> PlaneIndices(int div)
 {
-    std::vector<int> indices;
+    std::vector<uint32_t> indices;
     for (int row = 0; row < div - 1; row++)
     {
         for (int col = 0; col < div - 1; col++)
