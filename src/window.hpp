@@ -4,6 +4,7 @@
 #include "include/glad/glad.h"
 #include <GLFW/glfw3.h>
 
+#include <iostream>
 
 GLFWwindow *newWindow(int width, int height);
 
