@@ -1,15 +1,16 @@
 #include "mesh_generator.hpp"
+#include "map.hpp"
 #include <cstdint>
 #include <vector>
 
-std::vector<float> GenerateHeightmap(int div, bool use_perlin)
+Map GenerateHeightmap(int div, bool use_perlin)
 {
     PerlinNoise noise = PerlinNoise(0, 0.05f, 4, 1.0f);
 
-    // float heights[div][div];
     std::vector<float> heights;
 
-    // TODO rewrite for vector return
+    // TODO rewrite for vector return - basically outdated
+    /*
     if(use_perlin)
     {
 
@@ -81,25 +82,24 @@ std::vector<float> GenerateHeightmap(int div, bool use_perlin)
         std::cout << "flatten" << std::endl;
         return heights;
     }
+    */
 
     // Generating vertex heights using DLA algo
-    else
+    // else
+    Map map(div);        
+    // map.GenerateIslandShape();
+    map.GenerateMountainRidges(0.05f);
+    map.BoxBlurMap(1, 20);
+    for (int row = 0; row < div; row++)
     {
-        Map map(div);        
-        // map.GenerateIslandShape();
-        map.GenerateMountainRidges(0.05f);
-        map.BoxBlurMap(1, 20);
-        for (int row = 0; row < div; row++)
+        for (int col = 0; col < div; col++)
         {
-            for (int col = 0; col < div; col++)
-            {
-                std::cout << row << ", " << col << std::endl;
-                // std::cout << map.GetTile(row, col)->GetHeight() << std::endl;
-                heights.push_back(map.GetTile(row, col)->GetHeight());
-            }
+            // std::cout << map.GetTile(row, col)->GetHeight() << std::endl;
+            heights.push_back(map.GetTile(row, col)->GetHeight());
         }
-        return heights;
     }
+    return map;
+
 }
 
 std::vector<float> PlaneVertices(std::vector<float> heights, int div, float size)

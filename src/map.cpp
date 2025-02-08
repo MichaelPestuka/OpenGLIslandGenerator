@@ -215,6 +215,16 @@ void Map::GenerateRivers(int amount)
 std::vector<struct coordinate> Map::PathfindRiver(struct coordinate start, struct coordinate end)
 {
     std::vector<struct coordinate> path;
+    coordinate current_coord;
+    current_coord.x = size / 2;
+    current_coord.y = size / 2;
+    while(current_coord.x >= 0 && current_coord.x < size && current_coord.y >= 0 && current_coord.y < size )
+    {
+        path.push_back(coordinate{current_coord.x, current_coord.y});
+        current_coord.x += 1;
+        current_coord.y += 1;
+    }
+    return path;
     // std::vector<struct coordinate> path;
     // std::vector<struct coordinate> path;
     

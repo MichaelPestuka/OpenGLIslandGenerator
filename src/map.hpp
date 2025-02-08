@@ -21,13 +21,14 @@ class Map
         void GenerateIslandShape();
         void GenerateMountainRidges(float map_fill_amount);
         void BoxBlurMap(int mask_size, int passes);
+        std::vector<struct coordinate> PathfindRiver(struct coordinate start, struct coordinate end);
         void GenerateRivers(int amount);
     private:
         int size;
         std::vector<MapTile> tiles;
         void FillInGapsInNoise();
         bool compareDistance(struct coordinate a, struct coordinate b);
-        std::vector<struct coordinate> PathfindRiver(struct coordinate start, struct coordinate end);
+        // std::vector<struct coordinate> PathfindRiver(struct coordinate start, struct coordinate end);
 };
 
 #endif

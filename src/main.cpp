@@ -14,6 +14,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "map.hpp"
 #include "mesh.hpp"
 #include "shader.hpp"
 #include "window.hpp"
@@ -41,7 +42,7 @@ float lastY = 0.0f;
 float lastFrame = 0.0f;
 float deltaTime = 0.0f;
 
-float yaw = -90.0f;
+float yaw = -90.0f; 
 float pitch = 0.0f;
 
 Camera camera(cameraPos, cameraPos + cameraFront, cameraUp);
@@ -67,16 +68,34 @@ int main()
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
     int div = 200;
-    std::vector<float> planeVertices = PlaneVertices(div, 20.0f, false);
+    std::cout << "preheight" << std::endl;
+    Map heightmap = GenerateHeightmap(div, false);
+    std::vector<float> planeHeights;
+    for (int row = 0; row < div; row++)
+    {
+        for (int col = 0; col < div; col++)
+        {
+            // std::cout << map.GetTile(row, col)->GetHeight() << std::endl;
+            planeHeights.push_back(heightmap.GetTile(row, col)->GetHeight());
+        }
+    }
+    std::cout << "preplane" << std::endl;
+    std::vector<float> planeVertices = PlaneVertices(planeHeights, div, 20.0f);
     std::vector<uint32_t> planeIndices = PlaneIndices(div);
 
     std::cout << "pretexture" << std::endl;
     unsigned int texture = TextureFromImageFile("grass.jpg");
 
     uint8_t proctex[div * div];
-    for (int i = 0; i < div*div; i++) {
+    for (int i = 0; i < div * div; i++) {
+        proctex[i] = 0;
+    }
+    std::vector<coordinate> rivercoords = heightmap.PathfindRiver(coordinate{0,0}, coordinate{0,0});
+    for (int i = 0; i < rivercoords.size(); i++) {
         // proctex[i] = rand() % 256;
-        proctex[i] = (uint8_t)(planeVertices[1 + 5 * i] * 256);
+        coordinate current = rivercoords[i];
+        proctex[current.x * div + current.y] = 255;
+        // proctex[i] = (uint8_t)(planeVertices[1 + 5 * i] * 256);
     }
     unsigned int proctexid = AlphaTextureFromCharArray(proctex, div, div);
 
