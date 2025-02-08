@@ -1,5 +1,4 @@
 #include "texture.hpp"
-#include "shader.hpp"
 
 int TextureFromImageFile(const char* filename)
 {

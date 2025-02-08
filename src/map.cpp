@@ -13,10 +13,11 @@ Map::Map(int size)
 
 MapTile* Map::GetTile(int x, int y)
 {
-    if(&(tiles[x+size*y]) == nullptr)
-    {
-        std::cout << "nonexist: " << x << " " << y << std::endl;
-    }
+    // Outdated debug thing
+    // if(&(tiles[x+size*y]) == nullptr)
+    // {
+    //     std::cout << "nonexist: " << x << " " << y << std::endl;
+    // }
     return &(tiles[x + size*y]);
 }
 
@@ -32,7 +33,7 @@ void Map::GenerateIslandShape()
             circle_placement *= -1.0f;
             circle_placement += 1.0f;
             circle_placement *= noise.FractalValue(x, y);
-            std::clamp(circle_placement, 0.0f, 1.0f);
+            circle_placement = std::clamp(circle_placement, 0.0f, 1.0f);
             GetTile(x, y)->SetHeight(circle_placement);
         }
     }

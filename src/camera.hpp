@@ -15,7 +15,7 @@ enum Camera_Movement
     DOWN
 };
 
-const float defaultSpeed = 2.5f;
+const float defaultSpeed = 25.0f;
 const float defaultSensivity = 0.1f;
 
 class Camera
