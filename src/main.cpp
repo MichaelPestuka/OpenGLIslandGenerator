@@ -1,3 +1,5 @@
+#include <cstdint>
+#include <cstdlib>
 #include <glm/ext/vector_float3.hpp>
 #include <iostream>
 #include <ostream>
@@ -62,7 +64,6 @@ int main()
     } 
     glViewport(0, 0, windowWidth, windowHeight); 
 
-
     Shader shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
     int div = 200;
@@ -71,8 +72,17 @@ int main()
 
     std::cout << "pretexture" << std::endl;
     unsigned int texture = TextureFromImageFile("grass.jpg");
+
+    uint8_t proctex[div * div];
+    for (int i = 0; i < div*div; i++) {
+        // proctex[i] = rand() % 256;
+        proctex[i] = (uint8_t)(planeVertices[1 + 5 * i] * 256);
+    }
+    unsigned int proctexid = AlphaTextureFromCharArray(proctex, div, div);
+
     std::cout << "posttexture" << std::endl;
 
+    // Load terrain plane coords into vertex struct
     std::vector<vertex> newVertices;
     for(int i = 4; i < planeVertices.size(); i += 5)
     {
@@ -80,10 +90,10 @@ int main()
         newVertex.position = glm::vec3(planeVertices[i - 4], planeVertices[i - 3], planeVertices[i - 2]);
         newVertex.row = planeVertices[i - 1];
         newVertex.col = planeVertices[i];
-        // std::cout << "VertexPos: " << newVertex.position.x << ", " << newVertex.position.y << ", " << newVertex.position.z << std::endl;
         newVertices.push_back(newVertex);
     }
 
+    // Create terrain plane mesh
     Mesh planeMesh = Mesh(newVertices, planeIndices);
 
     glEnable(GL_DEPTH_TEST);
@@ -102,23 +112,26 @@ int main()
 
         shader.use();
 
-        glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)windowWidth/(float)windowHeight, 0.1f, 500.0f);
-
-        glm::mat4 view = camera.GetViewMatrix();
-
+        // View Transform
         int viewLoc = glGetUniformLocation(shader.ID, "view");
+        glm::mat4 view = camera.GetViewMatrix();
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         
+        // Projection Transform
         int projectionLoc = glGetUniformLocation(shader.ID, "projection");
+        glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)windowWidth/(float)windowHeight, 0.1f, 500.0f);
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(proj));
 
-        glBindTexture(GL_TEXTURE_2D, texture);
+        // bind texture TODO
+        glBindTexture(GL_TEXTURE_2D, proctexid);
 
+        // Model Transform
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, -5.0f, 0.0f));
         int modelLoc = glGetUniformLocation(shader.ID, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
+        // Draw terran plane
         planeMesh.Draw(shader);
 
         glfwSwapBuffers(window);

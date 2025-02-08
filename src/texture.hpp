@@ -10,4 +10,6 @@
 
 int TextureFromImageFile(const char* filename);
 
+int AlphaTextureFromCharArray(uint8_t* data, int width, int height);
+
 #endif
