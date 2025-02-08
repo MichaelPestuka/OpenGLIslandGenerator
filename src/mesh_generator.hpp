@@ -11,7 +11,9 @@
 #include "map.hpp"
 #include "maptile.hpp"
 
-std::vector<float> PlaneVertices(int div, float size, bool use_perlin);
+std::vector<float> GenerateHeightmap(int div, bool use_perlin);
+
+std::vector<float> PlaneVertices(std::vector<float> heights, int div, float size);
 
 std::vector<uint32_t> PlaneIndices(int div);
 

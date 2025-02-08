@@ -1,14 +1,15 @@
 #include "mesh_generator.hpp"
 #include <cstdint>
+#include <vector>
 
-std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
+std::vector<float> GenerateHeightmap(int div, bool use_perlin)
 {
-    std::vector<float> plane;
     PerlinNoise noise = PerlinNoise(0, 0.05f, 4, 1.0f);
 
-    float triangle_size = size/div; 
-    float heights[div][div];
+    // float heights[div][div];
+    std::vector<float> heights;
 
+    // TODO rewrite for vector return
     if(use_perlin)
     {
 
@@ -22,7 +23,7 @@ std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
                 circle_placement += 1.0f;
                 std::clamp(circle_placement, 0.0f, 1.0f);
 
-                heights[row][col] = circle_placement * (1.0f + noise.FractalValue(row, col)) / 2.0f;
+                heights[row * div + col] = circle_placement * (1.0f + noise.FractalValue(row, col)) / 2.0f;
             }
         }
 
@@ -36,7 +37,7 @@ std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
         {
             glm::ivec2 coord = unchecked_coords.front();
             unchecked_coords.pop();
-            if(heights[coord.x][coord.y] < 0.4f)
+            if(heights[coord.x * div + coord.y] < 0.4f)
             {
                 is_sea[coord.x][coord.y] = SEA;
                 
@@ -71,13 +72,14 @@ std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
         {
             for (int col = 0; col < div; col++)
             {
-                if(is_sea[row][col] == UNKNOWN && heights[row][col] < 0.4f)
+                if(is_sea[row][col] == UNKNOWN && heights[row * div + col] < 0.4f)
                 {
-                    heights[row][col] = 0.4f;
+                    heights[row * div + col] = 0.4f;
                 }
             }
         }
         std::cout << "flatten" << std::endl;
+        return heights;
     }
 
     // Generating vertex heights using DLA algo
@@ -87,28 +89,35 @@ std::vector<float> PlaneVertices(int div, float size, bool use_perlin = true)
         // map.GenerateIslandShape();
         map.GenerateMountainRidges(0.05f);
         map.BoxBlurMap(1, 20);
-
         for (int row = 0; row < div; row++)
         {
             for (int col = 0; col < div; col++)
             {
+                std::cout << row << ", " << col << std::endl;
                 // std::cout << map.GetTile(row, col)->GetHeight() << std::endl;
-                heights[row][col] = map.GetTile(row, col)->GetHeight();
+                heights.push_back(map.GetTile(row, col)->GetHeight());
             }
         }
+        return heights;
     }
+}
+
+std::vector<float> PlaneVertices(std::vector<float> heights, int div, float size)
+{
+    float triangle_size = size/div; 
+    std::vector<float> plane;
     for (int row = 0; row < div; row++)
     {
         for (int col = 0; col < div; col++)
         {
 
-            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, heights[row][col] , row * triangle_size);
+            glm::vec3 vertexPosition = glm::vec3(col * triangle_size, heights[row * div + col] , row * triangle_size);
             plane.push_back(vertexPosition.x);
             plane.push_back(vertexPosition.y);
             plane.push_back(vertexPosition.z);
 
-            plane.push_back((float)row);
-            plane.push_back((float)col);
+            plane.push_back((float)col / div + 0.5f/div);
+            plane.push_back((float)row / div + 0.5f/div);
 
 
             // std::cout << "pos: " << vertexPosition.x << ", " << vertexPosition.y << ", "<< vertexPosition.z << std::endl;
